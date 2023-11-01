@@ -10,6 +10,7 @@ import { TileSelector } from './components/TileSelector';
 import { calcTileId } from './utils/tileId';
 import { TileMap } from './components/TileMap';
 import { exportTileMap } from './utils/export';
+import { Counter } from './components/Counter';
 
 export interface TileSet {
     id: string;
@@ -34,6 +35,9 @@ function App() {
 
     const [imageDimensions, setImageDimensions] = useState<ImageDimensions | null>(null);
 
+    const [tileMapRows, setTileMapRows] = useState(10);
+    const [tileMapCols, setTileMapCols] = useState(10);
+
     const onUpload = async (file: File) => {
         const base64 = await toBase64(file);
         const tileset = {
@@ -52,8 +56,8 @@ function App() {
     };
 
     const onTileMapDownloadClick = () => {
-        exportTileMap(tileMap, tileSet || ({} as TileSet), 10, 10);
-    }
+        exportTileMap(tileMap, tileSet || ({} as TileSet), tileMapRows, tileMapCols);
+    };
 
     return (
         <>
@@ -89,6 +93,17 @@ function App() {
                         />
                     </div>
 
+                    <div className='grid grid-cols-2 gap-2'>
+                        <div>
+                            <p className='pb-1'>Rows</p>
+                           <Counter state={tileMapRows} setState={setTileMapRows} />
+                        </div>
+                        <div>
+                            <p className='pb-1'>Columns</p>
+                            <Counter state={tileMapCols} setState={setTileMapCols}/>
+                        </div>
+                    </div>
+
                     <Hr />
 
                     {tileSet != null && imageDimensions != null ? (
@@ -106,8 +121,8 @@ function App() {
                 <section className='p-4'>
                     {imageDimensions != null ? (
                         <TileMap
-                            rows={10}
-                            cols={10}
+                            rows={tileMapRows}
+                            cols={tileMapCols}
                             tileSet={tileSet || ({} as TileSet)}
                             tileMap={tileMap}
                             selectedTileId={selectedTileId}

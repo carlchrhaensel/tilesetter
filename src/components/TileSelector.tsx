@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { TileSet } from '../App';
 import { ImageDimensions } from '../utils/base64';
 import { calcTileId } from '../utils/tileId';
+import { Counter } from './Counter';
 import { SelectableTile } from './SelectableTile';
 
 interface Props {
@@ -11,6 +13,8 @@ interface Props {
 }
 
 export const TileSelector = (props: Props) => {
+    const [tileScale, setTileScale] = useState(1.5);
+
     if (props.imageDimensions == null) {
         console.log('imageDimensions is null');
         return null;
@@ -21,11 +25,10 @@ export const TileSelector = (props: Props) => {
     );
     const amountWidth = Math.floor(props.imageDimensions.width / (props.tileSet.tileWidth || 16));
 
-    const tileScale = 2;
 
     return (
         <div>
-            Select tile
+            <Counter state={tileScale} setState={setTileScale} steps={0.5} />
             <p>
                 Dimensions: {props.imageDimensions.width}x{props.imageDimensions.height}
             </p>
