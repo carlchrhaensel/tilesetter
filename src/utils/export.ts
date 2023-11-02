@@ -1,5 +1,6 @@
 import { TileMap, TileSet } from '../App';
 import { base64ToImage } from './base64';
+import { splitTileId } from './tileId';
 
 export const exportTileMap = async (
     tileMap: TileMap,
@@ -18,15 +19,17 @@ export const exportTileMap = async (
     canvas.height = rows * tileSet.tileHeight;
 
     const image = await base64ToImage(tileSet.imageBase64);
-    
+
     Object.keys(tileMap).forEach((tileMapId) => {
         const tileSetId = tileMap[tileMapId];
 
-        const tileSourcePositionX = parseInt(tileSetId.split('-')[0], 10) * tileSet.tileWidth;
-        const tileSourcePositionY = parseInt(tileSetId.split('-')[1], 10) * tileSet.tileHeight;
+        const tileSetPos = splitTileId(tileSetId);
+        const tileSourcePositionX = tileSetPos.col * tileSet.tileWidth;
+        const tileSourcePositionY = tileSetPos.row * tileSet.tileHeight;
 
-        const tileDestinationPositionX = parseInt(tileMapId.split('-')[0], 10) * tileSet.tileWidth;
-        const tileDestinationPositionY = parseInt(tileMapId.split('-')[1], 10) * tileSet.tileHeight;
+        const tileMapPos = splitTileId(tileMapId);
+        const tileDestinationPositionX = tileMapPos.col * tileSet.tileWidth;
+        const tileDestinationPositionY = tileMapPos.row * tileSet.tileHeight;
 
         ctx.drawImage(
             image,
